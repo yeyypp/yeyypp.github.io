@@ -5,7 +5,7 @@
   调度发生在用户态。
   - 当发生系统调用时，M会放弃当前持有的P，调度器会确保有另外的M来持有这个P，当系统调用
   完成后，M会尝试偷另外一个线程的context，如果失败，则会把这个完成系统调用的G放到一个全
-  局队列中，自己休眠。
+  局队列中，自己休眠。M
   - 当P的队列中没有G时，就会从全局队列中获取，context也会不定时检查全局队列中的G，如果全局队列也为空，则会尝试偷去其他上下文队列中的G
 - G状态
   - runnable：在队列中
@@ -16,6 +16,7 @@
 - GC
   - 三色标记：初始均为白，然后从root开始标记，可达的均为灰，将灰色对象取出，标记其引用为灰，并标记自己为黑，直到所有灰色均为黑，此时白色的就为垃圾，进行回收
   - 写屏障：编译时加入在写入指针前的一小段代码
+  - 定
 
 ## select, poll, epoll
 - select  
@@ -41,5 +42,9 @@
   - level-triggered与poll一样
 
 ## Network
+- DNS
+  - 
 ## Redis
-- Why redis is single threaded  
+- Why redis is single threaded 
+## Git
+- git rebase
