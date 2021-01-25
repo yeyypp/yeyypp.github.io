@@ -43,8 +43,14 @@
 
 ## Network
 - DNS
-  - 
+  - 客户端像本地服务器递归查询，本地服务器像
 ## Redis
 - Why redis is single threaded 
 ## Git
-- git rebase
+- git merge/rebase:都是合并分支，merge使用three-way merge， 一般git checkout master， git merge feature，两者最后的结果是一样，但是rebase的历史是线性的
+## Database
+- 事务
+  - 隔离级别：
+    - 未提交读：允许脏读，A，B，A读到了B修改的但未提交的数据，B失败后，读到的就是脏数据
+    - 提交读：只能读取到已经提交的数据，不能防止可重复读，A，B，A事务中，前后两次读取到在B修改的数据，不一致
+    - 可重复读：InnoDB默认级别，一次事务中两次操作，读取的数据一样
