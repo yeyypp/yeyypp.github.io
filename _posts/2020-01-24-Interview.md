@@ -84,3 +84,113 @@
 - 索引
   - 最左前缀：现在联合索引是a，b，c，查询a，ab，abc时会使用联合索引，ac会使用a的索引查询
   - 索引失效：
+  
+## Redis
+- LRU
+  - lkeys-lru, volatile-lru(only evict expire keys), use maxmemory to set the memory limit.
+  - The lru in redis is a approximated lru algorithms.(In some database management, the buffer pool manager uses approximated lru to evict pages)
+    - In redis, it samples 5 or more keys, then evict the obj which has the most idle time.
+  
+```
+type LRUCache struct {
+	head, tail *Node
+	m map[int]*Node
+	count, capacity int
+}
+
+func Constructor(capacity int) *LRUCache{
+	head := &Node{
+		key: 0,
+		value: 0,
+	}
+
+	tail := &Node{
+		key:0,
+		value:0,
+	}
+	head.next = tail
+	tail.pre = head
+	return &LRUCache{
+		head:head,
+		tail: tail,
+		count: 0,
+		capacity: capacity,
+		m: make(map[int]*Node),
+	}
+}
+
+func (lru *LRUCache) Put(key, value int)  {
+	if node, ok := lru.m[key]; ok {
+		node.value = value
+		lru.moveToForward(node)
+		return
+	}
+	node := &Node{
+		key: key,
+		value: value,
+	}
+	lru.m[key] = node
+	lru.addToHead(node)
+	lru.count++
+	if lru.count > lru.capacity {
+		last := lru.tail.pre
+		lru.removeNode(last)
+		delete(lru.m, last.key)
+		last = nil
+	}
+}
+
+func (lru *LRUCache) Get(key int) int {
+	if node, ok := lru.m[key]; ok {
+		lru.moveToForward(node)
+		return node.value
+	}
+	return -1
+}
+
+type Node struct {
+	key, value int
+	pre, next *Node
+}
+
+func (lru *LRUCache) removeNode(node *Node) {
+	pre, next := node.pre, node.next
+	pre.next = next
+	next.pre = pre
+	node.next = nil
+	node.pre = nil
+}
+
+func (lru *LRUCache) addToHead(node *Node) {
+	pre, next := lru.head, lru.head.next
+	node.pre = pre
+	node.next = next
+	lru.head.next = node
+	next.pre = node
+}
+
+func (lru *LRUCache) moveToForward(node *Node) {
+	lru.removeNode(node)
+	lru.addToHead(node)
+}
+```
+  
+- Distributed locks
+  - use set key value nx ex time (only set if key doesn't). unlock with a lua
+  ```
+  if redis.call("get",KEYS[1]) == ARGV[1] then
+    return redis.call("del",KEYS[1])
+  else
+  return 0
+  end
+  ```
+  - Red lock,accquire lock from redis node one by one, if get N = all/2 + 1 lock, then we think it gets the lock.
+  - 5 data types
+  
+## Kafka
+## Mysql
+## TCP/IP
+## Process Thread
+## Rate Limit / Break
+[break](https://zjykzk.github.io/posts/cs/dist/circuit-breaker/)
+## Distributed ID
