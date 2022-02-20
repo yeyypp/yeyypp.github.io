@@ -78,7 +78,9 @@
     - 可重复读：InnoDB默认级别，一次事务中两次操作，读取的数据一样。通过锁来避免，当
     - 幻读:主要发生在insert
   - [InnoDB中的多版本控](https://tech.meituan.com/2014/08/20/innodb-lock.html)
-  - MVCC,通过undo log 实现，每一条record后还有三个隐藏字段
+  - MVCC,通过undo log 实现，每一条record后还有三个隐藏字段,其中一个是修改数据的事务id。在事务开始时，读数据会创建一个read view，里边记录当前活跃的事务id，最小的最大的分别为低水位及高水位，发生读操作时，通过对比该操作的事务id，如果是在低水位以前，说明是已经提交的，可见，否则顺着undolog的指针向上查找，直到记录的事务id小于低水位。
+  - redolog用来crash recovery，在将page改动写入redolog
+  - double write buffer，数据从buffer pool先写到dwb，dwb先写入自己的磁盘文件，dwb再入磁盘数据文件
 - 索引
   - 最左前缀：现在联合索引是a，b，c，查询a，ab，abc时会使用联合索引，ac会使用a的索引查询
   - 索引失效：
