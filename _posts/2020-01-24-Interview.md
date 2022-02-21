@@ -187,10 +187,10 @@ func (lru *LRUCache) moveToForward(node *Node) {
   - Red lock,accquire lock from redis node one by one, if get N = all/2 + 1 lock, then we think it gets the lock.
   - 5 data types
   
-## Kafka
-## Mysql
-## TCP/IP
-## Process Thread
+## MapReduce
+- 为什么需要：数据量大，单机无法完成，需要多机器协作，必然会出现网络分区错误，或者节点crash，需要能有自恢复功能
+- 难点：任务如何分割，才不会iu造成某一节点的任务时间过久。大部分任务需要经过多个map， reduce过程，维护成本高。
+- 
 ## Rate Limit / Break
 [break](https://zjykzk.github.io/posts/cs/dist/circuit-breaker/)
 ## Distributed ID
